@@ -41,7 +41,7 @@ jobs:
       with:
         server_address: email-smtp.ap-northeast-2.amazonaws.com
         server_port: 587
-        secure: true
+        secure: false
         username: ${{ secrets.SES_USERNAME }}
         password: ${{ secrets.SES_PASSWORD }}
         subject: "[CI] Build Failed"
