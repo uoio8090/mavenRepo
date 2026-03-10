@@ -1,5 +1,5 @@
 public class Cal {
     int getSum(int a, int b) {
-        return a + b;
+        return a + b + c;
     }
 }
