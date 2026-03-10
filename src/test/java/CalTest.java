@@ -21,7 +21,7 @@ class CalTest {
     @Test
     void basicUnitTest3() {
         Cal cal = new Cal();
-        int ret = cal.getSum(210, 20);
+        int ret = cal.getSum(210, 10);
         assertEquals(231, ret);
     }
 }
