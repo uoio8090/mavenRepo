@@ -29,3 +29,30 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+
+    - name: Get commit author email
+      if: failure()
+      id: author
+      run: echo "EMAIL=$(git log -1 --pretty=format:'%ae')" >> $GITHUB_OUTPUT
+
+    - name: Send email via SES
+      if: failure()
+      uses: dawidd6/action-send-mail@v3
+      with:
+        server_address: email-smtp.ap-northeast-2.amazonaws.com
+        server_port: 587
+        secure: true
+        username: ${{ secrets.SES_USERNAME }}
+        password: ${{ secrets.SES_PASSWORD }}
+        subject: "[CI] Build Failed"
+        to: ${{ steps.author.outputs.EMAIL }}
+        from: ${{ secrets.SES_FROM_EMAIL }}
+        body: |
+          Build failed.
+
+          Repository: ${{ github.repository }}
+          Commit: ${{ github.sha }}
+          Author: ${{ steps.author.outputs.EMAIL }}
+
+          Check logs:
+          https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
