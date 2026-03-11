@@ -21,38 +21,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
       with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: maven
-    - name: Build with Maven
-      run: mvn -B package --file pom.xml
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-northeast-2
 
-    - name: Get commit author email
-      if: failure()
-      id: author
-      run: echo "EMAIL=$(git log -1 --pretty=format:'%ae')" >> $GITHUB_OUTPUT
-
-    - name: Send email via SES
-      if: failure()
-      uses: dawidd6/action-send-mail@v3
-      with:
-        server_address: email-smtp.ap-northeast-2.amazonaws.com
-        server_port: 587
-        secure: false
-        username: ${{ secrets.SES_USERNAME }}
-        password: ${{ secrets.SES_PASSWORD }}
-        subject: "[CI] Build Failed"
-        to: ${{ steps.author.outputs.EMAIL }}
-        from: ${{ secrets.SES_FROM_EMAIL }}
-        body: |
-          Build failed.
-
-          Repository: ${{ github.repository }}
-          Commit: ${{ github.sha }}
-          Author: ${{ steps.author.outputs.EMAIL }}
-
-          Check logs:
-          https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    - name: Send Email with SES
+      run: |
+        aws ses send-email \
+          --from "mincoding@naver.com" \
+          --destination "ToAddresses=inho.choi@mincoding.co.kr" \
+          --message "Subject={Data=CI Test},Body={Text={Data=Hello from GitHub Actions}}"
