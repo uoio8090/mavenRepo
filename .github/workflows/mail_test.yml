@@ -28,5 +28,5 @@ jobs:
       run: |
         aws ses send-email \
           --from "mincoding@naver.com" \
-          --destination "ToAddresses=본인이메일아이디@본인도메인.com" \ # 이곳에 본인 이메일을 적어주세요.
+          --destination "ToAddresses=inho.choi@mincoding.co.kr" \ # 이곳에 본인 이메일을 적어주세요.
           --message "Subject={Data=CI Test},Body={Text={Data=Hello from GitHub Actions}}"
