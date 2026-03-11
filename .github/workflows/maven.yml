@@ -49,3 +49,9 @@ jobs:
           --from "mincoding@naver.com" \
           --destination "ToAddresses=$EMAIL" \
           --message "Subject={Data=Build Failed},Body={Text={Data=Your commit broke the build in GitHub Actions. Please check.}}"
+            
+    - run: mkdir staging && cp target/*.jar staging
+    - uses: actions/upload-artifact@v4
+      with:
+        name: Package
+        path: staging
